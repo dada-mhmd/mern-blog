@@ -1,18 +1,21 @@
 import bcrypt from 'bcryptjs'
 import User from "../models/userModel.js"
+import asyncHandler from './../middleware/asyncHandler.js';
 
-export const signup = async (req, res) => {
+export const signup = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body
 
     if(!username || !email || !password || username === '' || email === '' || password === '') {
-        return res.status(400).json({message: 'Please enter all fields'})
+        res.status(400)
+        throw new Error('Please add all fields')
     }
     const user = await User.findOne({email})
 
     if(user) {
-        return res.status(400).json({message: 'User already exists'})
+        res.status(400)
+        throw new Error('User already exists')
     }
-
+    
     const hashedPassword = await bcrypt.hash(password, 10)
 
     await User.create({username, email, password:hashedPassword})
@@ -20,4 +23,4 @@ export const signup = async (req, res) => {
     res.send('Signup Successful')
 
 }
-
+)
