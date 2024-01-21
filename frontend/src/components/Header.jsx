@@ -18,7 +18,9 @@ const Header = () => {
         </span>
         Blog
       </Link>
+      {/* end logo */}
 
+      {/* search form */}
       <form>
         <TextInput
           type="text"
@@ -27,21 +29,28 @@ const Header = () => {
           className="hidden lg:inline"
         />
       </form>
+      {/* end search form */}
 
+      {/* search btn in medium screens and below */}
       <Button className="w-12 h-10 lg:hidden" pill color="gray">
         <AiOutlineSearch />
       </Button>
+      {/* search btn in medium screens and below */}
 
+      {/* toggle theme btn and hamburger btn */}
       <div className="flex items-center gap-2 md:order-2">
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaMoon />
         </Button>
         <Link to="/sign-in">
-          <Button gradientDuoTone="purpleToBlue">Sign In</Button>
+          <Button outline gradientDuoTone="purpleToBlue">
+            Sign In
+          </Button>
         </Link>
 
         <Navbar.Toggle />
       </div>
+      {/* toggle theme btn and hamburger btn */}
 
       {/* collapse */}
       <Navbar.Collapse>
