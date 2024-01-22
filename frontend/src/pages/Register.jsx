@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
+import GoogleBtn from '../components/GoogleBtn';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -106,6 +107,8 @@ const Register = () => {
                 'Register'
               )}
             </Button>
+
+            <GoogleBtn />
           </form>
 
           <div className='flex gap-1 mt-4 text-sm'>

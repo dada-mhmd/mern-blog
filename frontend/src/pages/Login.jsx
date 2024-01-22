@@ -9,6 +9,7 @@ import {
   signInStart,
   signInSuccess,
 } from '../redux/user/userSlice';
+import GoogleBtn from '../components/GoogleBtn';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -101,6 +102,8 @@ const Login = () => {
                 'Register'
               )}
             </Button>
+
+            <GoogleBtn />
           </form>
 
           <div className='flex gap-1 mt-4 text-sm'>
