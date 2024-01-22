@@ -3,14 +3,20 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from '../redux/user/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
@@ -18,11 +24,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErrorMessage('Please fill in all fields');
+      return dispatch(signInFailure('Please fill in all fields'));
     }
     try {
-      setIsLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
+
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -32,16 +38,14 @@ const Login = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        setIsLoading(false);
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       } else {
-        setIsLoading(false);
+        dispatch(signInSuccess(data));
         toast.success(data.message);
         navigate('/');
       }
     } catch (error) {
-      setIsLoading(false);
-      setErrorMessage(error.message);
+      dispatch(signInFailure(error.message));
       toast.error(error.message);
     }
   };
@@ -86,9 +90,9 @@ const Login = () => {
             <Button
               gradientDuoTone='purpleToPink'
               type='submit'
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? (
+              {loading ? (
                 <>
                   <Spinner size='sm' />
                   <span className='p-2'>Loading...</span>
