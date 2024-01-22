@@ -40,7 +40,7 @@ const Register = () => {
         navigate('/login');
       }
     } catch (error) {
-      setIsLoading(false)
+      setIsLoading(false);
       setErrorMessage(error.message);
       toast.error(error.message);
     }
@@ -110,7 +110,7 @@ const Register = () => {
 
           <div className='flex gap-1 mt-4 text-sm'>
             <span>Already have an account?</span>
-            <Link className='text-blue-500 font-medium underline' to='/sign-in'>
+            <Link className='text-blue-500 font-medium underline' to='/login'>
               Login
             </Link>
           </div>
