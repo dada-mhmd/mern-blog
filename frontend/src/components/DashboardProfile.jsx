@@ -1,6 +1,6 @@
 import { Alert, Button, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getDownloadURL,
   getStorage,
@@ -9,10 +9,19 @@ import {
 } from 'firebase/storage';
 import { app } from './../firebase';
 
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from '../redux/user/userSlice';
+
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { toast } from 'react-toastify';
 
 const DashboardProfile = () => {
+  const dispatch = useDispatch();
+
   const { currentUser } = useSelector((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
@@ -20,6 +29,8 @@ const DashboardProfile = () => {
   const [imageFileUploadingProgress, setImageFileUploadingProgress] =
     useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
+
+  const [formData, setFormData] = useState({});
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -59,15 +70,49 @@ const DashboardProfile = () => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
         });
       }
     );
   };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
+
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+      } else {
+        dispatch(updateSuccess(data));
+        toast.success('Profile updated successfully');
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
+
+  // jsx
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
 
-      <form className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input
           type='file'
           accept='image/*'
@@ -119,14 +164,21 @@ const DashboardProfile = () => {
           placeholder='Username'
           id='username'
           defaultValue={currentUser?.username}
+          onChange={handleChange}
         />
         <TextInput
           type='email'
           placeholder='Email'
           id='email'
           defaultValue={currentUser?.email}
+          onChange={handleChange}
         />
-        <TextInput type='password' placeholder='Password' id='password' />
+        <TextInput
+          type='password'
+          placeholder='Password'
+          id='password'
+          onChange={handleChange}
+        />
         <Button type='submit' gradientDuoTone={'purpleToBlue'} outline>
           Update
         </Button>

@@ -1,9 +1,12 @@
 import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { HiArrowSmRight, HiUser } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
 const DashboardSidebar = () => {
+  const { currentUser } = useSelector((state) => state.user);
+
   const { search } = useLocation();
   const [tab, setTab] = useState('');
 
@@ -24,7 +27,7 @@ const DashboardSidebar = () => {
               as='div'
               active={tab === 'profile'}
               icon={HiUser}
-              label={'User'}
+              label={currentUser?.username}
               labelColor='dark'
             >
               Profile
