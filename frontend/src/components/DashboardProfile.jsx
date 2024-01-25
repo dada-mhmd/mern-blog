@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, Spinner, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
@@ -23,11 +23,12 @@ import {
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const DashboardProfile = () => {
   const dispatch = useDispatch();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading } = useSelector((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
@@ -215,6 +216,7 @@ const DashboardProfile = () => {
           id='email'
           defaultValue={currentUser?.email}
           onChange={handleChange}
+          disabled={!currentUser.isAdmin}
         />
         <TextInput
           type='password'
@@ -222,9 +224,28 @@ const DashboardProfile = () => {
           id='password'
           onChange={handleChange}
         />
-        <Button type='submit' gradientDuoTone={'purpleToBlue'} outline>
-          Update
+        <Button
+          type='submit'
+          gradientDuoTone={'purpleToBlue'}
+          outline
+          disabled={loading || imageFileUploadingProgress}
+        >
+          {loading ? <Spinner /> : 'Update'}
         </Button>
+
+        {currentUser.isAdmin && (
+          <>
+            <Link to={'/create-post'}>
+              <Button
+                type='button'
+                gradientDuoTone='purpleToPink'
+                className='w-full'
+              >
+                Create a Post
+              </Button>
+            </Link>
+          </>
+        )}
       </form>
 
       <div className='text-red-500 flex justify-between mt-5'>

@@ -52,9 +52,13 @@ export const signin = asyncHandler(async (req, res) => {
       throw new Error('Invalid credentials');
     }
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
+    const token = jwt.sign(
+      { id: validUser._id, isAdmin: validUser.isAdmin },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      }
+    );
 
     const { password: pass, ...rest } = validUser._doc;
 
@@ -97,7 +101,10 @@ export const google = asyncHandler(async (req, res) => {
       profilePicture: googlePhotoUrl,
     });
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: newUser._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET
+    );
     const { password, ...rest } = newUser._doc;
 
     res
