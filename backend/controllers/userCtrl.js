@@ -57,3 +57,24 @@ export const updateUser = asyncHandler(async (req, res) => {
     res.status(200).json(updatedUser);
   }
 });
+
+// delete user
+export const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user.id !== req.params.userId) {
+    res.status(401);
+    throw new Error('Something went wrong, please try again');
+  }
+
+  const user = await User.findByIdAndDelete(req.params.userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.status(200).json('User deleted successfully');
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie('access_token').status(200).json('Logged out successfully');
+});

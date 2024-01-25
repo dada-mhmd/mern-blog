@@ -5,12 +5,27 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
+import { logoutSuccess } from '../redux/user/userSlice';
+import { toast } from 'react-toastify';
 const Header = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
 
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/user/logout', { method: 'POST' });
+      if (!res.ok) {
+        toast.error('Something went wrong');
+      } else {
+        dispatch(logoutSuccess());
+      }
+    } catch (error) {
+      toast.error('Something went wrong');
+    }
+  };
 
   return (
     <Navbar className='border-b-2'>
@@ -73,7 +88,7 @@ const Header = () => {
             </Link>
             <Dropdown.Divider />
 
-            <Dropdown.Item>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to='/login'>

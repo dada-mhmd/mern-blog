@@ -18,6 +18,7 @@ const Login = () => {
   const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({});
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
@@ -99,7 +100,7 @@ const Login = () => {
                   <span className='p-2'>Loading...</span>
                 </>
               ) : (
-                'Register'
+                'Login'
               )}
             </Button>
 

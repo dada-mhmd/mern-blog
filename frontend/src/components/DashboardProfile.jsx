@@ -1,6 +1,7 @@
-import { Alert, Button, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import {
   getDownloadURL,
   getStorage,
@@ -13,6 +14,10 @@ import {
   updateStart,
   updateSuccess,
   updateFailure,
+  deleteUserStart,
+  deleteUserFailure,
+  deleteUserSuccess,
+  logoutSuccess,
 } from '../redux/user/userSlice';
 
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -31,6 +36,7 @@ const DashboardProfile = () => {
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
 
   const [formData, setFormData] = useState({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -104,6 +110,43 @@ const DashboardProfile = () => {
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setShowDeleteModal(false);
+    dispatch(deleteUserStart());
+    try {
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+        toast.error(data.message);
+      } else {
+        dispatch(deleteUserSuccess());
+        toast.success('User deleted successfully');
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
+  // logout
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/user/logout', {
+        method: 'POST',
+      });
+      await res.json();
+      if (!res.ok) {
+        toast.error('Something went wrong');
+      } else {
+        dispatch(logoutSuccess());
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -185,9 +228,40 @@ const DashboardProfile = () => {
       </form>
 
       <div className='text-red-500 flex justify-between mt-5'>
-        <span className='cursor-pointer'>Delete Account</span>
-        <span className='cursor-pointer'>Sign Out</span>
+        <span
+          onClick={() => setShowDeleteModal(true)}
+          className='cursor-pointer'
+        >
+          Delete Account
+        </span>
+        <span onClick={handleLogout} className='cursor-pointer'>
+          Sign Out
+        </span>
       </div>
+
+      <Modal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center items-center gap-4'>
+              <Button color='failure' onClick={handleDeleteUser}>
+                Yes !
+              </Button>
+
+              <Button onClick={() => setShowDeleteModal(false)}>No !</Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
