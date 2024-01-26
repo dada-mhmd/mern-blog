@@ -85,3 +85,31 @@ export const deletePost = asyncHandler(async (req, res) => {
 
   res.status(200).json('Post deleted successfully');
 });
+
+// update post
+export const updatePost = asyncHandler(async (req, res) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    res.status(403);
+    throw new Error('Not authorized as an admin');
+  }
+
+  const post = await Post.findByIdAndUpdate(
+    req.params.postId,
+    {
+      $set: {
+        title: req.body.title,
+        content: req.body.content,
+        category: req.body.category,
+        image: req.body.image,
+      },
+    },
+    { new: true }
+  );
+
+  if (!post || !post.userId) {
+    res.status(404);
+    throw new Error('Post not found');
+  }
+
+  res.status(200).json(post);
+});
