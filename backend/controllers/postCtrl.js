@@ -69,3 +69,19 @@ export const getPosts = asyncHandler(async (req, res) => {
 
   res.status(200).json({ posts, totalPost, lastMonthPosts });
 });
+
+// delete post
+export const deletePost = asyncHandler(async (req, res) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    res.status(403);
+    throw new Error('Not authorized as an admin');
+  }
+
+  const post = await Post.findByIdAndDelete(req.params.postId);
+  if (!post || !post.userId) {
+    res.status(404);
+    throw new Error('Post not found');
+  }
+
+  res.status(200).json('Post deleted successfully');
+});
