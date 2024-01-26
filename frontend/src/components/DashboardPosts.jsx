@@ -1,4 +1,4 @@
-import { Table } from 'flowbite-react';
+import { Button, Table } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ const DashboardPosts = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   const [posts, setPosts] = useState([]);
+  const [showMore, setShowMore] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -16,6 +17,9 @@ const DashboardPosts = () => {
         const data = await res.json();
         if (res.ok) {
           setPosts(data.posts);
+          if (data.length < 9) {
+            setShowMore(false);
+          }
         }
       } catch (error) {
         toast.error(error.message);
@@ -26,8 +30,26 @@ const DashboardPosts = () => {
     }
   }, [currentUser._id, currentUser.isAdmin]);
 
+  const handleShowMore = async () => {
+    const startIndex = posts.length;
+    try {
+      const res = await fetch(
+        `/api/post/getPosts?userId=${currentUser._id}&startIndex=${startIndex}`
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setPosts([...posts, ...data.posts]);
+        if (data.posts.length < 9) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      toast.error('Something went wrong');
+    }
+  };
+
   return (
-    <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+    <div className='table-auto w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
       {currentUser.isAdmin && posts.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>
@@ -84,6 +106,16 @@ const DashboardPosts = () => {
               </Table.Body>
             ))}
           </Table>
+
+          {showMore && (
+            <Button
+              onClick={handleShowMore}
+              gradientMonochrome={'info'}
+              className='mt-5 mx-auto'
+            >
+              Show more
+            </Button>
+          )}
         </>
       ) : (
         <p>No posts found</p>
