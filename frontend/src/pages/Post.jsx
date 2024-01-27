@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoadingSpinner from './../components/LoadingSpinner';
 import { Button } from 'flowbite-react';
+import CTA from '../components/CTA';
 
 const Post = () => {
   const { postSlug } = useParams();
@@ -66,11 +67,14 @@ const Post = () => {
         </span>
       </div>
 
-      <div className='p-3 max-w-2xl w-full mx-auto'>
+      <div className=''>
         <div
-          className='post-content'
+          className='p-3 max-w-2xl w-full mx-auto post-content'
           dangerouslySetInnerHTML={{ __html: post && post?.content }}
         ></div>
+        <div className='max-w-4xl mx-auto w-full'>
+          <CTA />
+        </div>
       </div>
     </main>
   );
