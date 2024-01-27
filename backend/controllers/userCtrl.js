@@ -60,7 +60,7 @@ export const updateUser = asyncHandler(async (req, res) => {
 
 // delete user
 export const deleteUser = asyncHandler(async (req, res) => {
-  if (req.user.id !== req.params.userId) {
+  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
     res.status(401);
     throw new Error('Something went wrong, please try again');
   }
@@ -77,4 +77,52 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
 export const logout = asyncHandler(async (req, res) => {
   res.clearCookie('access_token').status(200).json('Logged out successfully');
+});
+
+// get all users
+export const getUsers = asyncHandler(async (req, res) => {
+  if (!req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Not authorized as an admin');
+  }
+
+  const startIndex = parseInt(req.query.startIndex) || 0;
+  const limit = parseInt(req.query.limit) || 9;
+  const sortDirection = req.query.sort === 'asc' ? 1 : -1;
+
+  const users = await User.find()
+    .sort({ createdAt: sortDirection })
+    .skip(startIndex)
+    .limit(limit);
+
+  if (!users) {
+    res.status(404);
+    throw new Error('Users not found');
+  }
+
+  const usersWithoutPassword = users.map((user) => {
+    const { password, ...rest } = user._doc;
+    return rest;
+  });
+
+  const totalUsers = await User.countDocuments();
+  const now = new Date();
+
+  const oneMonthAgo = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    now.getDate()
+  );
+
+  const lastMonthUsers = await User.countDocuments({
+    createdAt: {
+      $gte: oneMonthAgo,
+    },
+  });
+
+  res.status(200).json({
+    users: usersWithoutPassword,
+    totalUsers,
+    lastMonthUsers,
+  });
 });
