@@ -91,7 +91,7 @@ const UpdatePost = () => {
     e.preventDefault();
     try {
       const res = await fetch(
-        `/api/post/updatepost/${formData._id}/${currentUser._id}`,
+        `/api/post/updatepost/${postId}/${currentUser._id}`,
         {
           method: 'PUT',
           headers: {
@@ -139,9 +139,14 @@ const UpdatePost = () => {
             }
           >
             <option value='uncategorized'>Select a category</option>
+            <option value='html'>HTML</option>
+            <option value='css'>CSS</option>
             <option value='javascript'>Javascript</option>
             <option value='reactjs'>React</option>
             <option value='nextjs'>Next js</option>
+            <option value='nodejs'>Nodejs</option>
+            <option value='expressjs'>Expressjs</option>
+            <option value='mongodb'>MongoDB</option>
           </Select>
         </div>
 
@@ -186,7 +191,7 @@ const UpdatePost = () => {
           placeholder='Write your post'
           className='h-72 mb-12 '
           required
-          onChange={(e) => setFormData({ ...formData, content: e })}
+          onChange={(value) => setFormData({ ...formData, content: value })}
           value={formData.content}
         />
 
