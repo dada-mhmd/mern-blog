@@ -43,3 +43,27 @@ export const likeComment = asyncHandler(async (req, res) => {
   await comment.save();
   res.status(200).json(comment);
 });
+
+// edit
+export const editComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  if (!comment) {
+    res.status(404);
+    throw new Error('Comment not found');
+  }
+
+  if (comment.userId !== req.user.id && !req.user.isAdmin) {
+    res.status(401);
+    throw new Error('Not authorized as an admin');
+  }
+
+  const updatedComment = await Comment.findByIdAndUpdate(
+    req.params.commentId,
+    {
+      content: req.body.content,
+    },
+    { new: true }
+  );
+
+  res.status(200).json(updatedComment);
+});
