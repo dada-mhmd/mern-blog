@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import LoadingSpinner from './../components/LoadingSpinner';
 import { Button } from 'flowbite-react';
 import CTA from '../components/CTA';
+import Comment from '../components/Comment';
 
 const Post = () => {
   const { postSlug } = useParams();
@@ -40,7 +41,7 @@ const Post = () => {
   }
 
   return (
-    <main className='p-3 flex flex-col max-w-6xl mx-auto'>
+    <section className='p-3 flex flex-col max-w-6xl mx-auto'>
       <h1 className='text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl'>
         {post?.title}
       </h1>
@@ -67,16 +68,19 @@ const Post = () => {
         </span>
       </div>
 
-      <div className=''>
-        <div
-          className='p-3 max-w-2xl w-full mx-auto post-content'
-          dangerouslySetInnerHTML={{ __html: post && post?.content }}
-        ></div>
-        <div className='max-w-4xl mx-auto w-full'>
-          <CTA />
-        </div>
+      <div
+        className='p-3 max-w-2xl w-full mx-auto post-content'
+        dangerouslySetInnerHTML={{ __html: post && post?.content }}
+      />
+
+      {/* CTA */}
+      <div className='max-w-4xl mx-auto w-full'>
+        <CTA />
       </div>
-    </main>
+
+      {/* comment */}
+      <Comment postId={post?._id} />
+    </section>
   );
 };
 

@@ -153,7 +153,7 @@ const DashboardProfile = () => {
 
   // jsx
   return (
-    <div className='max-w-lg mx-auto p-3 w-full'>
+    <section className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
 
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
@@ -283,7 +283,7 @@ const DashboardProfile = () => {
           </div>
         </Modal.Body>
       </Modal>
-    </div>
+    </section>
   );
 };
 

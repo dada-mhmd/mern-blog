@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import LoadingSpinner from './LoadingSpinner';
 
 const DashboardPosts = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -72,7 +73,7 @@ const DashboardPosts = () => {
   };
 
   return (
-    <div className='table-auto w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+    <section className='table-auto w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
       {currentUser.isAdmin && posts.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>
@@ -147,7 +148,12 @@ const DashboardPosts = () => {
           )}
         </>
       ) : (
-        <p>No posts found</p>
+        posts.length === 0 && (
+          <>
+            <p>No posts found</p>
+            <LoadingSpinner />
+          </>
+        )
       )}
 
       <Modal
@@ -173,7 +179,7 @@ const DashboardPosts = () => {
           </div>
         </Modal.Body>
       </Modal>
-    </div>
+    </section>
   );
 };
 

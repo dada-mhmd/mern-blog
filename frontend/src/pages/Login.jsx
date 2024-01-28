@@ -53,7 +53,7 @@ const Login = () => {
   };
 
   return (
-    <div className='mt-20'>
+    <section className='mt-20'>
       <div className='flex flex-col md:flex-row p-3 max-w-3xl mx-auto gap-5'>
         <div className='flex-1 sm:mt-10 mt-0'>
           <Link to='/' className='text-4xl font-bold dark:text-white'>
@@ -121,7 +121,7 @@ const Login = () => {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

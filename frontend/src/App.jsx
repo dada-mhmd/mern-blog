@@ -16,10 +16,12 @@ import AdminPrivateRoute from './components/PrivateRouteAdmin';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Post from './pages/Post';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Header />
       <main className='min-h-screen'>
         <ToastContainer />

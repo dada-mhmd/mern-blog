@@ -1,15 +1,16 @@
-import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
   HiUser,
 } from 'react-icons/hi';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
-import { logoutSuccess } from '../redux/user/userSlice';
+import { Sidebar } from 'flowbite-react';
 import { toast } from 'react-toastify';
+
+import { logoutSuccess } from '../redux/user/userSlice';
 
 const DashboardSidebar = () => {
   const dispatch = useDispatch();

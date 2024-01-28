@@ -126,3 +126,14 @@ export const getUsers = asyncHandler(async (req, res) => {
     lastMonthUsers,
   });
 });
+
+// get user
+export const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+  const { password, ...rest } = user._doc;
+  res.status(200).json(rest);
+});

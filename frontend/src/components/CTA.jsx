@@ -8,7 +8,7 @@ const CTA = () => {
         <p className='text-gray-500 my-2'>Check out these resources</p>
         <Button
           gradientDuoTone={'purpleToPink'}
-          className='rounded-tl-xl rounded-bl-none'
+          className='rounded-tl-xl rounded-bl-none mb-10 max-w-72 w-full mx-auto'
         >
           <a
             href='https://freecodecamp.org'
