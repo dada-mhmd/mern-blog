@@ -1,7 +1,7 @@
 import { Alert, Button, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CommentComp from './CommentComp';
 // eslint-disable-next-line react/prop-types
@@ -11,6 +11,8 @@ const Comment = ({ postId }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [commentError, setCommentError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,6 +61,35 @@ const Comment = ({ postId }) => {
     };
     fetchComments();
   }, [postId]);
+
+  const handleLike = async (commentId) => {
+    try {
+      if (!currentUser) {
+        navigate('/login');
+        return;
+      }
+
+      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+        method: 'PUT',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setComments(
+          comments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.likes.length,
+                }
+              : comment
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -127,7 +158,11 @@ const Comment = ({ postId }) => {
 
           {/* actual comments */}
           {comments?.map((comment) => (
-            <CommentComp key={comment._id} comment={comment} />
+            <CommentComp
+              key={comment._id}
+              comment={comment}
+              onLike={handleLike}
+            />
           ))}
         </>
       )}
