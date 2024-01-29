@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { Button, Textarea } from 'flowbite-react';
 
-const CommentComp = ({ comment, onLike, onEdit }) => {
+const CommentComp = ({ comment, onLike, onEdit, onDelete }) => {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.content);
@@ -126,13 +126,23 @@ const CommentComp = ({ comment, onLike, onEdit }) => {
 
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <button
-                    type='button'
-                    onClick={handleEdit}
-                    className='text-gray-400 hover:text-blue-500'
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      type='button'
+                      onClick={handleEdit}
+                      className='text-gray-400 hover:text-blue-500'
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type='button'
+                      onClick={() => onDelete(comment._id)}
+                      className='text-gray-400 hover:text-red-500'
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>
