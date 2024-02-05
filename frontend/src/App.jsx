@@ -17,6 +17,7 @@ import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Post from './pages/Post';
 import ScrollToTop from './components/ScrollToTop';
+import Search from './pages/Search';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/about' element={<About />} />
           <Route path='/login' element={<Login />} />
           <Route path='/sign-up' element={<Register />} />
+          <Route path='/search' element={<Search />} />
 
           <Route path='/post/:postSlug' element={<Post />} />
 
