@@ -4,6 +4,7 @@ import LoadingSpinner from './../components/LoadingSpinner';
 import { Button } from 'flowbite-react';
 import CTA from '../components/CTA';
 import Comment from '../components/Comment';
+import PostCard from '../components/PostCard';
 
 const Post = () => {
   const { postSlug } = useParams();
@@ -11,6 +12,7 @@ const Post = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
+  const [recentPosts, setRecentPosts] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -35,6 +37,21 @@ const Post = () => {
     };
     fetchPost();
   }, [postSlug]);
+
+  useEffect(() => {
+    const fetchRecentPosts = async () => {
+      try {
+        const res = await fetch(`/api/post/getPosts?limit=3`);
+        const data = await res.json();
+        if (res.ok) {
+          setRecentPosts(data.posts);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchRecentPosts();
+  });
 
   if (loading) {
     return <LoadingSpinner />;
@@ -80,6 +97,16 @@ const Post = () => {
 
       {/* comment */}
       <Comment postId={post?._id} />
+
+      {/* recent articles */}
+      <div className='flex flex-col justify-center items-center my-10'>
+        <h1 className='text-xl sm:text-3xl mt-5'>Recent Articles</h1>
+
+        <div className='flex flex-wrap gap-5 mt-5 justify-center'>
+          {recentPosts &&
+            recentPosts.map((post) => <PostCard key={post._id} post={post} />)}
+        </div>
+      </div>
     </section>
   );
 };

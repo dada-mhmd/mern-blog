@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  HiAnnotation,
   HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
@@ -74,6 +75,15 @@ const DashboardSidebar = () => {
                   icon={HiOutlineUserGroup}
                 >
                   Users
+                </Sidebar.Item>
+              </Link>
+              <Link to={'/dashboard?tab=comments'}>
+                <Sidebar.Item
+                  as='div'
+                  active={tab === 'comments'}
+                  icon={HiAnnotation}
+                >
+                  Comments
                 </Sidebar.Item>
               </Link>
             </>
